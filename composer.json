@@ -1,0 +1,29 @@
+{
+    "name": "thyseus/yii2-favorites",
+    "description": "General favorite management for Yii2",
+    "keywords": ["yii2", "yii2-favorites"],
+    "type": "yii2-extension",
+    "license": "GPLv3",
+    "support": {
+        "issues": "https://github.com/thyseus/yii2-favorites/issues?state=open",
+        "forum": "https://gitter.im/thyseus/yii2-favorites",
+        "source": "https://github.com/thyseus/yii2-favorites"
+    },
+    "authors": [
+        {
+            "name": "Herbert Maschke",
+            "email": "thyseus@gmail.com",
+            "homepage": "https://github.com/thyseus/yii2-favorites"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "yiisoft/yii2": "^2.0.0",
+        "yiisoft/yii2-bootstrap": "^2.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "thyseus\\favorites\\": ""
+        }
+    }
+}
