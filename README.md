@@ -31,7 +31,10 @@ use
 use thyseus\favorites\models\Favorite;
 
 $model = CurrentModel::findOne(57);
-echo Favorite::bookmarkLink(CurrentModel::className(), $model->id);
+echo $this->render('@vendor/thyseus/yii2-favorites/views/favorites/_button', [
+    'model' => CurrentModel::className(),
+    'target' => $model->slug
+]);
 ```
 
 to display a "Set as Favorite" / "Remove Favorite" toggle Button in the view files
@@ -53,7 +56,11 @@ If the automatic URL creation if yii2-favorites fails, you can append the URL ma
 use thyseus\favorites\models\Favorite;
 
 $model = CurrentModel::findOne(57);
-echo Favorite::bookmarkLink(CurrentModel::className(), $model->id, Url::to(['fancy-url', 'id' => 1337)]);
+echo $this->render('@vendor/thyseus/yii2-favorites/views/favorites/_button', [
+    'model' => CurrentModel::className(),
+    'target' => $model->id,
+    'url' => Url::to(['fancy-url', 'id' => 1337]) ,
+]);
 ```
 
 Use the fourth parameter to set an custom target_attribute:
@@ -62,17 +69,21 @@ Use the fourth parameter to set an custom target_attribute:
 use thyseus\favorites\models\Favorite;
 
 $model = CurrentModel::findOne(57);
-echo Favorite::bookmarkLink(CurrentModel::className(), $model->id, null, 'i_am_referenced_by_this_attribute');
+
+echo $this->render('@vendor/thyseus/yii2-favorites/views/favorites/_button', [
+    'model' => CurrentModel::className(),
+    'target' => $model->id,
+    'target_attribute' => 'i-am-referenced-by-this-column',
+]);
 ```
 
 If you want to use composite label identifiers, you can do it like this:
 
-
 ```php
-    public function getName()
-    {
-        return $this->firstname . ' ' . $this->lastname;
-    }
+public function getName()
+{
+    return $this->firstname . ' ' . $this->lastname;
+}
 ```
 
 ## Routes

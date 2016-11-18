@@ -28,27 +28,6 @@ class Favorite extends ActiveRecord
         return 'favorites';
     }
 
-    public static function bookmarkLink($model, $target_id, $url = null)
-    {
-        if ($favorite = Favorite::find()->where([
-            'model' => $model,
-            'created_by' => Yii::$app->user->id,
-            'target_id' => $target_id,
-        ])->one()
-        )
-            return Html::a(
-                Yii::t('app', 'Remove favorite'),
-                ['/favorites/favorites/delete', 'id' => $favorite->id],
-                ['class' => 'btn btn-danger']
-            );
-        else
-            return Html::a(
-                Yii::t('app', 'Set as favorite'),
-                ['/favorites/favorites/create', 'model' => $model, 'target_id' => $target_id, 'url' => $url],
-                ['class' => 'btn btn-primary']
-            );
-    }
-
     public function behaviors()
     {
         return [
@@ -106,5 +85,10 @@ class Favorite extends ActiveRecord
             $identifier_attribute = $target->identifierAttribute();
 
         return $this->hasOne($targetClass::className(), [$identifier_attribute => 'target_id']);
+    }
+
+    public static function exists($model, $owner, $target)
+    {
+        return Favorite::findOne(['model' => $model, 'created_by' => $owner, 'target_id' => $target]);
     }
 }
