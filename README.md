@@ -40,6 +40,21 @@ echo $this->render('@vendor/thyseus/yii2-favorites/views/favorites/_button', [
 to display a "Set as Favorite" / "Remove Favorite" toggle Button in the view files
 of the models you want to make your users to be able to add favorites to.
 
+Note that you can shorten the call if you set an alias like this in your application configuration:
+
+```php
+'aliases' => [
+    '@favorites' => '@app/vendor/thyseus/yii2-favorites'
+],
+
+```
+
+And call the view like:
+
+```php
+            echo $this->render('@favorites/views/favorites/_button', [
+```
+
 If the model is not identified by the column 'id' by default, for example if you are 
 using slugs, you can define the indentifierAttribute inside the model like this:
 
