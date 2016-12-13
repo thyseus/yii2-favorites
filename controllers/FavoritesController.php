@@ -113,10 +113,9 @@ class FavoritesController extends Controller
         ]);
 
         if ($favorite->save()) {
-            Yii::$app->getSession()->setFlash('success', Yii::t(
-                'favorites', 'The Favorite has been added'));
+            Yii::$app->getSession()->setFlash('success', Yii::t('favorites', 'The Favorite has been added'));
 
-            return $this->redirect(['view', 'id' => $favorite->id]);
+            return $this->redirect(Yii::$app->request->referrer ? Yii::$app->request->referrer : ['index']);
         } else {
             Yii::$app->getSession()->setFlash('danger', Yii::t(
                 'favorites', 'The Favorite could not be added. ') . json_encode($favorite->getErrors()));
@@ -140,7 +139,9 @@ class FavoritesController extends Controller
         else
             throw new ForbiddenHttpException;
 
-        return $this->redirect(['index']);
+        Yii::$app->getSession()->setFlash('success', Yii::t('favorites', 'The Favorite has been removed'));
+
+        return $this->redirect(Yii::$app->request->referrer ? Yii::$app->request->referrer : ['index']);
     }
 
     /**
