@@ -29,18 +29,18 @@ $this->params['breadcrumbs'][] = $this->title;
             ['attribute' => 'created_at', 'filter' => false],
             [
                 'filter' => false,
-                'format' => 'html',
+                'format' => 'raw',
                 'attribute' => 'target_id',
                 'value' => function ($data) {
                     if ($data->target)
-                        return Html::a($data->target->{$data->target_attribute}, $data->url);
+                        return Html::a($data->target->{$data->target_attribute}, $data->url, ['data-pjax' => 0]);
                 }
             ],
             [
-                'format' => 'html',
+                'format' => 'raw',
                 'attribute' => 'url',
                 'value' => function ($data) {
-                    return Html::a($data->url, $data->url);
+                    return Html::a($data->url, $data->url, ['data-pjax' => 0]);
                 }
             ],
             [
