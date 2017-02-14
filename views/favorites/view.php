@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <input action="action" type="button" class="btn btn-primary" value="<?= Yii::t('favorites', 'Back'); ?>" onclick="history.go(-1);" />
 
                 <?= Html::a(Yii::t('favorites', 'Remove favorite'), ['/favorites/favorites/delete', 'id' => $model->id],
-                    ['class' => 'btn btn-danger', 'data-confirm' => 'Are you sure?']);
+                    ['class' => 'btn btn-danger', 'data-confirm' => Yii::t('favorites', 'Are you sure?')]);
 
                 ?>
             </p>
