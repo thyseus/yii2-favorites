@@ -2,15 +2,17 @@
 
 namespace thyseus\favorites\controllers;
 
-use Yii;
 use thyseus\favorites\models\Favorite;
 use thyseus\favorites\models\FavoriteSearch;
-use yii\helpers\Url;
-use yii\web\Controller;
-use yii\web\NotFoundHttpException;
-use yii\web\ForbiddenHttpException;
+use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\Url;
+use yii\web\BadRequestHttpException;
+use yii\web\Response;
+use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
 
 /**
  * FavoritesController implements the CRUD actions for Favorites model.
@@ -28,9 +30,16 @@ class FavoritesController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'view', 'create', 'delete'],
+                        'actions' => ['index', 'view', 'create', 'delete', 'json'],
                         'roles' => ['@'],
                     ],
+                ],
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'create' => ['POST'],
+                    'delete' => ['POST'],
                 ],
             ],
         ];
@@ -72,78 +81,6 @@ class FavoritesController extends Controller
         ]);
     }
 
-    public function guessTargetAttribute($target)
-    {
-        foreach (['title', 'name', 'number', 'firstname', 'lastname', 'sigil', 'slug', 'identifier', 'description', 'id'] as $guess)
-            if ($target->hasAttribute($guess) || method_exists($target, 'get' . ucfirst($guess)))
-                return $guess;
-
-        throw new Exception(Yii::t('favorite', 'Could not guess target identifier attribute. Please provide it manually.'));
-    }
-
-    public function generateUrl($model, $target_id)
-    {
-        $x = explode("\\", $model);
-        $x = array_pop($x);
-        $x = strtolower(preg_replace('/(?<!^)[A-Z]+/', '-$0', $x));
-        $x = '/' . $x . '/view';
-
-        return Url::to([$x, 'id' => $target_id], true);
-    }
-
-    /**
-     * Creates a new Favorites model.
-     * @return mixed
-     */
-    public function actionCreate($model, $target_id, $url = null, $target_attribute = null)
-    {
-        if (!$url)
-            $url = $this->generateUrl($model, $target_id);
-
-        if (!$target_attribute)
-            $target_attribute = $this->guessTargetAttribute(new $model);
-
-        $favorite = Yii::createObject([
-            'class' => Favorite::className(),
-            'model' => $model,
-            'target_id' => $target_id,
-            'target_attribute' => $target_attribute,
-            'created_by' => Yii::$app->user->id,
-            'url' => $url,
-        ]);
-
-        if ($favorite->save()) {
-            Yii::$app->getSession()->setFlash('success', Yii::t('favorites', 'The Favorite has been added'));
-
-            return $this->redirect(Yii::$app->request->referrer ? Yii::$app->request->referrer : ['index']);
-        } else {
-            Yii::$app->getSession()->setFlash('danger', Yii::t(
-                'favorites', 'The Favorite could not be added. ') . json_encode($favorite->getErrors()));
-
-            return $this->goBack();
-        }
-    }
-
-    /**
-     * Deletes an existing Favorite model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param string $id
-     * @return mixed
-     */
-    public function actionDelete($id)
-    {
-        $favorite = $this->findModel($id);
-
-        if (Yii::$app->user->id == $favorite->created_by)
-            $favorite->delete();
-        else
-            throw new ForbiddenHttpException;
-
-        Yii::$app->getSession()->setFlash('success', Yii::t('favorites', 'The Favorite has been removed'));
-
-        return $this->redirect(Yii::$app->request->referrer ? Yii::$app->request->referrer : ['index']);
-    }
-
     /**
      * Finds the Favorite model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
@@ -158,5 +95,97 @@ class FavoritesController extends Controller
         } else {
             throw new NotFoundHttpException(Yii::t('favorites', 'The requested favorite does not exist.'));
         }
+    }
+
+    /**
+     * Set an entity as favorite for the currently logged in user.
+     * Should be called by AJAX (see favorites/_button.php)
+     * @return mixed
+     */
+    public function actionCreate()
+    {
+        if (!isset($_POST['model']) && !isset($_POST['target-id']))
+            throw new BadRequestHttpException;
+
+        $model = $_POST['model'];
+        $target_id = $_POST['target-id'];
+
+        $url = isset($_POST['url']) ? $_POST['url'] : $this->generateUrl($model, $target_id);
+        $target_attribute = isset($_POST['target_attribute']) ? $_POST['target_attribute'] : $this->guessTargetAttribute(new $model);
+
+        $favorite = Yii::createObject([
+            'class' => Favorite::className(),
+            'model' => $model,
+            'target_id' => $target_id,
+            'target_attribute' => $target_attribute,
+            'created_by' => Yii::$app->user->id,
+            'url' => $url,
+        ]);
+
+        if ($favorite->save()) {
+            $this->layout = false;
+            return $this->render('_button', [
+                'model' => $favorite->model,
+                'target' => $favorite->target_id,
+            ]);
+        }
+    }
+
+    public function generateUrl($model, $target_id)
+    {
+        $x = explode("\\", $model);
+        $x = array_pop($x);
+        $x = strtolower(preg_replace('/(?<!^)[A-Z]+/', '-$0', $x));
+        $x = '/' . $x . '/view';
+
+        return Url::to([$x, 'id' => $target_id], true);
+    }
+
+    public function guessTargetAttribute($target)
+    {
+        foreach (['title', 'name', 'number', 'firstname', 'lastname', 'sigil', 'slug', 'identifier', 'description', 'id'] as $guess)
+            if ($target->hasAttribute($guess) || method_exists($target, 'get' . ucfirst($guess)))
+                return $guess;
+
+        throw new Exception(Yii::t('favorite', 'Could not guess target identifier attribute. Please provide it manually.'));
+    }
+
+    public function actionJson()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $favorites = [];
+
+        foreach(Favorite::find()->where(['created_by' => Yii::$app->user->id])->all() as $favorite)
+            if($favorite->target && $favorite->url)
+                $favorites[] = ['title' => $favorite->target->{$favorite->target_attribute}, 'url' => $favorite->url];
+
+        return $favorites;
+    }
+
+    /**
+     * Deletes an existing Favorite model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param string $id
+     * @return mixed
+     */
+    public function actionDelete($id = null)
+    {
+        if (!$id && isset($_POST['id']))
+            $id = $_POST['id'];
+
+        $favorite = $this->findModel($id);
+
+        if (Yii::$app->user->id == $favorite->created_by)
+            $favorite->delete();
+        else
+            throw new ForbiddenHttpException;
+
+        $this->layout = false;
+
+        return $this->render('_button', [
+            'model' => $favorite->model,
+            'target' => $favorite->target_id,
+        ]);
     }
 }
