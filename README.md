@@ -101,6 +101,29 @@ public function getName()
 }
 ```
 
+You can use this code example to make an dynamic menu containing your favorites in the NavBar:
+
+```php
+echo Nav::widget([
+    'options' => ['class' => 'navbar-nav navbar-right'],
+    'encodeLabels' => false,
+    'items' => [
+        ['label' => '<span class="glyphicon glyphicon-bookmark"></span>', 'options' => ['class' => 'favorites-menu clickable', 'style' => 'cursor: pointer;'], 'url' => false, 'visible' => !$user->isGuest, 'items' => ['' => '']],
+      ]
+    ]);
+```
+
+```js
+$('.favorites-menu').click(function() {
+    $.getJSON('".Url::to(['//favorites/favorites/json'])."', function (data) {
+        dd = $('.favorites-menu').find('.dropdown-menu');
+        dd.html('');
+        dd.append('<li><a href=\"".Url::to(['//favorites/favorites/index'])."\">Manage favorites</a></li>');
+        data.forEach(function(elem) { dd.append('<li><a href=\"' + elem.url + '\">' + elem.title.substring(0, 60) + '</a><li>') });
+    }); 
+});
+```
+
 ## Routes
 
 You can use the following routes to access the favorites module:
