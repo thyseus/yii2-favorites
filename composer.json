@@ -2,6 +2,7 @@
     "name": "thyseus/yii2-favorites",
     "description": "General favorite management for Yii2",
     "keywords": ["yii2", "yii2-favorites"],
+    "version": "0.1.0",
     "type": "yii2-extension",
     "license": "GPLv3",
     "support": {
@@ -16,7 +17,7 @@
             "homepage": "https://github.com/thyseus/yii2-favorites"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require": {
         "yiisoft/yii2": "^2.0.0",
         "yiisoft/yii2-bootstrap": "^2.0.0"
