@@ -30,12 +30,12 @@ else
 
 if ($favorite = Favorite::exists($model, $owner, $target)) {
     echo Html::a(sprintf(
-        '<span data-toggle="popover" title="%s" data-content="%s"><span class="fa fa-star-o ci-color"></span></span>',
+        '<span data-toggle="popover" title="%s" data-content="%s">' . Yii::$app->getModule('favorites')->icon_inactive,
         Yii::t('app', 'Favorites'),
         Yii::t('app', 'Click to remove favorite')), null, array_merge($htmlOptions, ['data-status' => 'active', 'data-id' => $favorite->id]));
 } else {
     echo Html::a(sprintf(
-        '<span data-toggle="popover" title="%s" data-content="%s"><span class="fa fa-star ci-color"></span></span>',
+        '<span data-toggle="popover" title="%s" data-content="%s">' . Yii::$app->getModule('favorites')->icon_active,
         Yii::t('app', 'Favorites'),
         Yii::t('app', 'Click to add to favorites')), null, array_merge($htmlOptions, ['data-status' => 'inactive']));
 }

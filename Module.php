@@ -10,10 +10,10 @@ use yii\i18n\PhpMessageSource;
  */
 class Module extends \yii\base\Module
 {
-    public $version = '0.1.0-dev';
+    public $version = '0.2.0-dev';
     
-    public $icon_active = '<i class="glyphicon glyphicon-star"></i>';
-    public $icon_inactive = '<i class="glyphicon glyphicon-star-empty"></i>';
+    public $icon_active = '<i class="glyphicon glyphicon-star-empty"></i>';
+    public $icon_inactive = '<i class="glyphicon glyphicon-star"></i>';
 
     /**
      * @inheritdoc
