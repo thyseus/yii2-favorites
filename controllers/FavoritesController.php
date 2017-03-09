@@ -7,6 +7,7 @@ use thyseus\favorites\models\FavoriteSearch;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\HtmlPurifier;
 use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
@@ -109,6 +110,7 @@ class FavoritesController extends Controller
 
         $model = $_POST['model'];
         $target_id = $_POST['target-id'];
+        $icon = $_POST['icon'];
 
         $url = isset($_POST['url']) ? $_POST['url'] : $this->generateUrl($model, $target_id);
         $target_attribute = isset($_POST['target_attribute']) ? $_POST['target_attribute'] : $this->guessTargetAttribute(new $model);
@@ -119,7 +121,8 @@ class FavoritesController extends Controller
             'target_id' => $target_id,
             'target_attribute' => $target_attribute,
             'created_by' => Yii::$app->user->id,
-            'url' => $url,
+            'url' => HtmlPurifier::process($url),
+            'icon' => HTMLPurifier::process($icon),
         ]);
 
         if ($favorite->save()) {
@@ -158,7 +161,11 @@ class FavoritesController extends Controller
 
         foreach(Favorite::find()->where(['created_by' => Yii::$app->user->id])->all() as $favorite)
             if($favorite->target && $favorite->url)
-                $favorites[] = ['title' => $favorite->target->{$favorite->target_attribute}, 'url' => $favorite->url];
+                $favorites[] = [
+                    'title' => $favorite->target->{$favorite->target_attribute},
+                    'url' => $favorite->url,
+                    'icon' => $favorite->icon,
+                ];
 
         return $favorites;
     }

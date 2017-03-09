@@ -13,6 +13,9 @@ if (!isset($url))
 if (!isset($target_attribute))
     $target_attribute = null;
 
+if(!isset($icon))
+    $icon = '<i class="glyphicon glyphicon-star"></i>';
+
 $necessaryOptions = [
     'class' => 'favorite-button',
     'data-model' => $model,
@@ -47,6 +50,7 @@ $this->registerJs("
     $('body').on('click', 'a.favorite-button', function(event) {
         data = {
              'model': $(this).data('model'),
+             'icon': '".$icon."',
              'target-id': $(this).data('target-id'),
              'url': $(this).data('url'),
              'target-attribute': $(this).data('target-attribute'),

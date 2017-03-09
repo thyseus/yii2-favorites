@@ -13,6 +13,7 @@ use yii\helpers\Html;
  * This is the model class for table "favorite".
  *
  * @property string $id
+ * @property string $icon
  * @property integer $user_id
  * @property string $offer_id
  *
@@ -46,6 +47,7 @@ class Favorite extends ActiveRecord
     {
         return [
             ['url', 'safe'],
+            ['icon', 'string'],
             [['model', 'created_by', 'target_id'], 'unique',
                 'targetAttribute' => ['model', 'created_by', 'target_id'],
                 'message' => Yii::t('favorites', 'The Favorite already exists')]
@@ -66,6 +68,7 @@ class Favorite extends ActiveRecord
             'model' => Yii::t('favorites', 'model'),
             'target_id' => Yii::t('favorites', 'Target'),
             'url' => Yii::t('favorites', 'url'),
+            'icon' => Yii::t('favorites', 'icon'),
         ];
     }
 
