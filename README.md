@@ -52,7 +52,7 @@ Note that you can shorten the call if you set an alias like this in your applica
 And call the view like:
 
 ```php
-            echo $this->render('@favorites/views/favorites/_button', [
+echo $this->render('@favorites/views/favorites/_button', [
 ```
 
 If the model is not identified by the column 'id' by default, for example if you are 
@@ -74,6 +74,7 @@ $model = CurrentModel::findOne(57);
 echo $this->render('@vendor/thyseus/yii2-favorites/views/favorites/_button', [
     'model' => CurrentModel::className(),
     'target' => $model->id,
+    'icon' => '<i class="fa fa-users" aria-hidden="true"></i>', // optional
     'url' => Url::to(['fancy-url', 'id' => 1337]) ,
 ]);
 ```
@@ -114,14 +115,23 @@ echo Nav::widget([
 ```
 
 ```js
-$('.favorites-menu').click(function() {
-    $.getJSON('".Url::to(['//favorites/favorites/json'])."', function (data) {
-        dd = $('.favorites-menu').find('.dropdown-menu');
-        dd.html('');
-        dd.append('<li><a href=\"".Url::to(['//favorites/favorites/index'])."\">Manage favorites</a></li>');
-        data.forEach(function(elem) { dd.append('<li><a href=\"' + elem.url + '\">' + elem.title.substring(0, 60) + '</a><li>') });
-    }); 
-});
+$this->registerJs("
+    $('.favorites-menu').click(function() {
+        $.getJSON('".Url::to(['//favorites/favorites/json'])."', function (data) {
+            dd = $('.favorites-menu').find('.dropdown-menu');
+            dd.html('');
+            dd.append('<li><a href=\"".Url::to(['//favorites/favorites/index'])."\">Manage favorites</a></li>');
+            data.forEach(function(elem) {
+              dd.append('<li>' + (elem.icon ? elem.icon : '') + ' <a href=\"' + elem.url + '\">' + elem.title.substring(0, 60) + '</a></li>');
+             });
+        });
+    });
+");
+```
+
+```css
+.favorites-menu li a { display: inline; padding: 0; }
+.favorites-menu .dropdown-menu { padding: 10px; }
 ```
 
 ## Routes
