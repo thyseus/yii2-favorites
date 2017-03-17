@@ -10,6 +10,12 @@ if (!isset($owner))
 if (!isset($url))
     $url = null;
 
+if (!isset($label_add) || $label_add === null)
+    $label_add = null;
+
+if (!isset($label_remove) || $label_remove === null)
+    $label_remove = null;
+
 if (!isset($target_attribute))
     $target_attribute = null;
 
@@ -33,12 +39,12 @@ else
 
 if ($favorite = Favorite::exists($model, $owner, $target)) {
     echo Html::a(sprintf(
-        '<span data-toggle="popover" title="%s" data-content="%s">' . Yii::$app->getModule('favorites')->icon_inactive,
+        '<span data-toggle="popover" title="%s" data-content="%s">' . Yii::$app->getModule('favorites')->icon_inactive . $label_remove,
         Yii::t('app', 'Favorites'),
         Yii::t('app', 'Click to remove favorite')), null, array_merge($htmlOptions, ['data-status' => 'active', 'data-id' => $favorite->id]));
 } else {
     echo Html::a(sprintf(
-        '<span data-toggle="popover" title="%s" data-content="%s">' . Yii::$app->getModule('favorites')->icon_active,
+        '<span data-toggle="popover" title="%s" data-content="%s">' . Yii::$app->getModule('favorites')->icon_active . $label_add,
         Yii::t('app', 'Favorites'),
         Yii::t('app', 'Click to add to favorites')), null, array_merge($htmlOptions, ['data-status' => 'inactive']));
 }
@@ -55,6 +61,8 @@ $this->registerJs("
              'url': $(this).data('url'),
              'target-attribute': $(this).data('target-attribute'),
              'id': $(this).data('id'),
+             'label_add': '$label_add',
+             'label_remove': '$label_remove',
         };
 
         if($(this).data('status') == 'active') {

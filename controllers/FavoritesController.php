@@ -101,7 +101,11 @@ class FavoritesController extends Controller
     /**
      * Set an entity as favorite for the currently logged in user.
      * Should be called by AJAX (see favorites/_button.php)
+     *
+     * $_POST string|null $label_add label to be displayed when fav is going to be added
+     * $_POST string|null $label_remove label to be displayed when fav is going to be removed
      * @return mixed
+     * @throws BadRequestHttpException
      */
     public function actionCreate()
     {
@@ -130,6 +134,8 @@ class FavoritesController extends Controller
             return $this->render('_button', [
                 'model' => $favorite->model,
                 'target' => $favorite->target_id,
+                'label_add' => isset($_POST['label_add']) ? $_POST['label_add'] : null,
+                'label_remove' => isset($_POST['label_remove']) ? $_POST['label_remove'] : null,
             ]);
         }
     }
@@ -193,6 +199,8 @@ class FavoritesController extends Controller
         return $this->render('_button', [
             'model' => $favorite->model,
             'target' => $favorite->target_id,
+            'label_add' => isset($_POST['label_add']) ? $_POST['label_add'] : null,
+            'label_remove' => isset($_POST['label_remove']) ? $_POST['label_remove'] : null,
         ]);
     }
 }
