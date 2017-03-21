@@ -21,4 +21,5 @@ return [
     'Set as favorite' => 'Zur Merkliste hinzufügen',
     'Remove favorite' => 'Aus Merkliste entfernen',
     'Back' => 'Zurück',
+    'type' => 'Typ',
 ];

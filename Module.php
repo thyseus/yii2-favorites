@@ -36,6 +36,16 @@ class Module extends \yii\base\Module
         'favorites/create' => 'favorites/favorites/create',
     ];
 
+    /** @var array Model aliases.
+     * For example:
+     * 'modelAliases' => [
+     *   'app\models\Offer' => 'Offer',
+     *   'app\models\Agency' => 'Agency',
+     *   'app\models\Merchant' => 'Merchant',
+     *   'app\models\ContactPerson' => Yii::t('some translation', 'Contact person'),
+     * ], */
+    public $modelAliases = [];
+
     /**
      * @inheritdoc
      */

@@ -36,6 +36,7 @@ class FavoriteSearch extends Favorite
             'created_by' => Yii::$app->user->id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'model' => $this->model,
         ]);
 
         $query->andFilterWhere(['like', 'url', $this->url]);

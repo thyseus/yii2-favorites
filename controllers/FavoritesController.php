@@ -7,13 +7,14 @@ use thyseus\favorites\models\FavoriteSearch;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 use yii\helpers\HtmlPurifier;
 use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
-use yii\web\Response;
 use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 /**
  * FavoritesController implements the CRUD actions for Favorites model.
@@ -58,6 +59,12 @@ class FavoritesController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'model_types' => ArrayHelper::map(
+                Favorite::find()->where(
+                    ['created_by' => Yii::$app->user->id])->groupBy('model')->all(), 'model', function ($data) {
+                $aliases = Yii::$app->getModule('favorites')->modelAliases;
+                return isset($aliases[$data->model]) ? $aliases[$data->model] : $data->model;
+            })
         ]);
     }
 
@@ -165,8 +172,8 @@ class FavoritesController extends Controller
 
         $favorites = [];
 
-        foreach(Favorite::find()->where(['created_by' => Yii::$app->user->id])->all() as $favorite)
-            if($favorite->target && $favorite->url)
+        foreach (Favorite::find()->where(['created_by' => Yii::$app->user->id])->all() as $favorite)
+            if ($favorite->target && $favorite->url)
                 $favorites[] = [
                     'title' => $favorite->target->{$favorite->target_attribute},
                     'url' => $favorite->url,

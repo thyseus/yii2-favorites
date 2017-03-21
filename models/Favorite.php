@@ -65,7 +65,7 @@ class Favorite extends ActiveRecord
             'updated_by' => Yii::t('favorites', 'updated by'),
             'created_at' => Yii::t('favorites', 'created at'),
             'updated_at' => Yii::t('favorites', 'updated at'),
-            'model' => Yii::t('favorites', 'model'),
+            'model' => Yii::t('favorites', 'type'),
             'target_id' => Yii::t('favorites', 'Target'),
             'url' => Yii::t('favorites', 'url'),
             'icon' => Yii::t('favorites', 'icon'),

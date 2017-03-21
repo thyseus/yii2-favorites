@@ -1,10 +1,8 @@
 <?php
 
-use thyseus\favorites\models\Favorite;
-use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
-use yii\helpers\Url;
 use yii\grid\GridView;
+use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\Pjax;
 
 
@@ -26,7 +24,33 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            ['attribute' => 'created_at', 'filter' => false],
+            [
+                'attribute' => 'created_at',
+                'filter' => false,
+                'format' => 'datetime',
+            ],
+            [
+                'filter' => false,
+                'format' => 'html',
+                'attribute' => 'icon',
+                'header' => '&nbsp;',
+                'value' => function ($data) {
+                    if ($data->icon)
+                        return $data->icon;
+                }
+            ],
+            [
+                'filter' => $model_types,
+                'format' => 'raw',
+                'attribute' => 'model',
+                'value' => function ($data) {
+                    if ($data->model) {
+                        $aliases = Yii::$app->getModule('favorites')->modelAliases;
+
+                        return isset($aliases[$data->model]) ? $aliases[$data->model] : $data->model;
+                    }
+                }
+            ],
             [
                 'filter' => false,
                 'format' => 'raw',
@@ -45,7 +69,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '{view} {delete}',
+                'template' => '{delete}',
                 'urlCreator' => function ($action, $model, $key, $index) {
                     return Url::to(['favorites/' . $action, 'id' => $model->id]);
                 }
