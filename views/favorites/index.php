@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     if ($data->model) {
                         $aliases = Yii::$app->getModule('favorites')->modelAliases;
 
-                        return isset($aliases[$data->model]) ? $aliases[$data->model] : $data->model;
+                        return isset($aliases[$data->model]) ? Yii::t('app', $aliases[$data->model]) : $data->model;
                     }
                 }
             ],

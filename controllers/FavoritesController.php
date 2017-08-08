@@ -63,7 +63,7 @@ class FavoritesController extends Controller
                 Favorite::find()->where(
                     ['created_by' => Yii::$app->user->id])->select('model')->groupBy('model')->all(), 'model', function ($data) {
                 $aliases = Yii::$app->getModule('favorites')->modelAliases;
-                return isset($aliases[$data->model]) ? $aliases[$data->model] : $data->model;
+                return isset($aliases[$data->model]) ? Yii::t('app', $aliases[$data->model]) : $data->model;
             })
         ]);
     }
