@@ -25,7 +25,7 @@ if (!isset($label_tooltip_title_add) || $label_tooltip_title_add === null) {
 }
 
 if (!isset($label_tooltip_title_remove) || $label_tooltip_title_remove === null) {
-    $label_tooltip_title_add = Yii::t('app', 'Favorites');
+    $label_tooltip_title_remove = Yii::t('app', 'Favorites');
 }
 
 if (!isset($label_tooltip_content_add) || $label_tooltip_content_add === null) {
