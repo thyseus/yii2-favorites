@@ -69,7 +69,7 @@ class FavoritesController extends Controller
     }
 
     /**
-     * Displays a single Favorite model.
+     * Displays a Favorite.
      * @param string $id
      * @param string $language
      * @return mixed
@@ -116,8 +116,9 @@ class FavoritesController extends Controller
      */
     public function actionCreate()
     {
-        if (!isset($_POST['model']) && !isset($_POST['target-id']))
+        if (!isset($_POST['model']) && !isset($_POST['target-id'])) {
             throw new BadRequestHttpException;
+        }
 
         $model = $_POST['model'];
         $target_id = $_POST['target-id'];
@@ -159,9 +160,11 @@ class FavoritesController extends Controller
 
     public function guessTargetAttribute($target)
     {
-        foreach (['title', 'name', 'number', 'firstname', 'lastname', 'sigil', 'slug', 'identifier', 'description', 'id'] as $guess)
-            if ($target->hasAttribute($guess) || method_exists($target, 'get' . ucfirst($guess)))
+        foreach (['title', 'name', 'number', 'firstname', 'lastname', 'sigil', 'slug', 'identifier', 'description', 'id'] as $guess) {
+            if ($target->hasAttribute($guess) || method_exists($target, 'get' . ucfirst($guess))) {
                 return $guess;
+            }
+        }
 
         throw new Exception(Yii::t('favorite', 'Could not guess target identifier attribute. Please provide it manually.'));
     }
@@ -184,30 +187,26 @@ class FavoritesController extends Controller
     }
 
     /**
-     * Deletes an existing Favorite model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * Deletes an existing Favorite.
+     * If deletion is successful, the browser will be redirected to the referrer,
+     * most probably coming from the 'favorites/index' page.
      * @param string $id
      * @return mixed
      */
     public function actionDelete($id = null)
     {
-        if (!$id && isset($_POST['id']))
+        if (!$id && isset($_POST['id'])) {
             $id = $_POST['id'];
+        }
 
         $favorite = $this->findModel($id);
 
-        if (Yii::$app->user->id == $favorite->created_by)
+        if (Yii::$app->user->id == $favorite->created_by) {
             $favorite->delete();
-        else
+        } else {
             throw new ForbiddenHttpException;
+        }
 
-        $this->layout = false;
-
-        return $this->render('_button', [
-            'model' => $favorite->model,
-            'target' => $favorite->target_id,
-            'label_add' => isset($_POST['label_add']) ? $_POST['label_add'] : null,
-            'label_remove' => isset($_POST['label_remove']) ? $_POST['label_remove'] : null,
-        ]);
+        return $this->redirect(Yii::$app->request->referrer);
     }
 }
