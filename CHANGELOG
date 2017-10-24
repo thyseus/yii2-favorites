@@ -1,4 +1,5 @@
 v0.2.0: to be released
 - added ability to add aliases for model types
+- improved title retrieval method of favoured Active Record Object
 
 2017-02-05, v0.1.0: initial release

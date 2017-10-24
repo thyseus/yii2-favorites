@@ -56,8 +56,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'raw',
                 'attribute' => 'target_id',
                 'value' => function ($data) {
-                    if ($data->target)
-                        return Html::a($data->target->{$data->target_attribute}, $data->url, ['data-pjax' => 0]);
+                    if ($data->target) {
+                        return Html::a($data->targetTitle(), $data->url, ['data-pjax' => 0]);
+                    }
                 }
             ],
             [

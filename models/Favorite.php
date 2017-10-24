@@ -90,6 +90,31 @@ class Favorite extends ActiveRecord
         return $this->hasOne($targetClass::className(), [$identifier_attribute => 'target_id']);
     }
 
+    /**
+     * Evaluate the current title of the Active Record Model that the Favorite links to.
+     *
+     * @return mixed|null the title if found, null otherwise. Null displays a nice, red - not set - in the default
+     * DetailView and GridView, so this would look nice
+     */
+    public function targetTitle()
+    {
+        if (!$this->target) {
+            return null;
+        }
+
+        $target = $this->target;
+
+        if (method_exists($target, 'get' . ucfirst($this->target_attribute))) {
+            return call_user_func([$target, 'get' . ucfirst($this->target_attribute)]);
+        }
+
+        if (isset($target->{$this->target_attribute})) {
+            return $target->{$this->target_attribute};
+        }
+
+        return null;
+    }
+
     public static function exists($model, $owner, $target)
     {
         return Favorite::findOne(['model' => $model, 'created_by' => $owner, 'target_id' => $target]);

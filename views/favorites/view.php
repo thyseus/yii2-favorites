@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\models\Sitecontent */
 
-$this->title = $model->target->{$model->target_attribute};
+$this->title = $model->targetTitle();
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="sitecontent-view">

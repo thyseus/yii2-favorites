@@ -178,7 +178,7 @@ class FavoritesController extends Controller
         foreach (Favorite::find()->where(['created_by' => Yii::$app->user->id])->all() as $favorite)
             if ($favorite->target && $favorite->url)
                 $favorites[] = [
-                    'title' => $favorite->target->{$favorite->target_attribute},
+                    'title' => $favorite->targetTitle(),
                     'url' => $favorite->url,
                     'icon' => $favorite->icon,
                 ];
