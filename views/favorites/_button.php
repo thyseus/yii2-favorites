@@ -44,6 +44,14 @@ if (!isset($icon)) {
     $icon = '<i class="glyphicon glyphicon-star"></i>';
 }
 
+if (!isset($icon_add)) {
+    $icon_add = Yii::$app->getModule('favorites')->icon_active;
+}
+
+if (!isset($icon_remove)) {
+    $icon_remove = Yii::$app->getModule('favorites')->icon_inactive;
+}
+
 $necessaryOptions = [
     'class' => 'favorite-button',
     'data-model' => $model,
@@ -64,13 +72,13 @@ if ($favorite = Favorite::exists($model, $owner, $target)) {
     echo Html::a(sprintf('<span data-toggle="popover" title="%s" data-content="%s">%s%s',
         $label_tooltip_title_remove,
         $label_tooltip_content_remove,
-        Yii::$app->getModule('favorites')->icon_inactive,
+        $icon_remove,
         $label_remove), null, array_merge($htmlOptions, ['data-status' => 'active', 'data-id' => $favorite->id]));
 } else {
     echo Html::a(sprintf('<span data-toggle="popover" title="%s" data-content="%s">%s%s',
         $label_tooltip_title_add,
         $label_tooltip_content_add,
-        Yii::$app->getModule('favorites')->icon_active,
+        $icon_add,
         $label_add), null, array_merge($htmlOptions, ['data-status' => 'inactive']));
 }
 
