@@ -1,4 +1,5 @@
 <?php
+
 use thyseus\favorites\models\Favorite;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -85,11 +86,13 @@ if ($favorite = Favorite::exists($model, $owner, $target)) {
 $url_create = Url::to(['/favorites/favorites/create']);
 $url_remove = Url::to(['/favorites/favorites/delete']);
 
-$this->registerJs("
+$this->registerJs(<<<JS
     $('body').on('click', 'a.favorite-button', function(event) {
         data = {
              'model': $(this).data('model'),
-             'icon': '" . $icon . "',
+             'icon': '$icon',
+             'icon_add': '$icon_add',
+             'icon_remove': '$icon_remove',
              'target-id': $(this).data('target-id'),
              'url': $(this).data('url'),
              'target-attribute': $(this).data('target-attribute'),
@@ -108,7 +111,7 @@ $this->registerJs("
                     if(typeof afterFavoritesAjaxSuccess === 'function')
                         afterFavoritesAjaxSuccess();
                 },
-              });
+              });                           
         } else if($(this).data('status') == 'inactive') {
             $.post({
                 url: '$url_create',
@@ -121,5 +124,11 @@ $this->registerJs("
                 },
               });
         }
+        event.stopPropagation();
+        event.preventDefault();
+        return false;
     });
-", View::POS_READY, 'yii2-favorites-ajax-button'); // keep third parameter(id) to avoid unnecessary js burden
+JS
+, View::POS_READY, 'yii2-favorites-ajax-button');
+// keep third parameter(id) to avoid unnecessary js burden in case this gets rendered more often, for example in
+// ListView _partial views. This ensures this javascript-block only gets rendered once, which is sufficient.

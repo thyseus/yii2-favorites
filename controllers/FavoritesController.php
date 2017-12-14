@@ -109,8 +109,11 @@ class FavoritesController extends Controller
      * Set an entity as favorite for the currently logged in user.
      * Should be called by AJAX (see favorites/_button.php)
      *
-     * $_POST string|null $label_add label to be displayed when fav is going to be added
-     * $_POST string|null $label_remove label to be displayed when fav is going to be removed
+     * $_POST string|null $label_add label to be displayed when the favorite is going to be added
+     * $_POST string|null $label_remove label to be displayed when the favorite is going to be removed
+     * $_POST string|null $icon the icon that the favorite should be saved with
+     * $_POST string|null $icon_add the icon that the favorite should be displayed with when it is going to be added
+     * $_POST string|null $icon_remove the icon that the favorite should be displayed with when it is going to be removed
      * @return mixed
      * @throws BadRequestHttpException
      */
@@ -120,12 +123,14 @@ class FavoritesController extends Controller
             throw new BadRequestHttpException;
         }
 
-        $model = $_POST['model'];
-        $target_id = $_POST['target-id'];
-        $icon = $_POST['icon'];
+        $post = Yii::$app->request->post();
 
-        $url = isset($_POST['url']) ? $_POST['url'] : $this->generateUrl($model, $target_id);
-        $target_attribute = isset($_POST['target_attribute']) ? $_POST['target_attribute'] : $this->guessTargetAttribute(new $model);
+        $model = $post['model'];
+        $target_id = $post['target-id'];
+        $icon = $post['icon'] ?? null;
+
+        $url = $_POST['url'] ?? $this->generateUrl($model, $target_id);
+        $target_attribute = $_POST['target_attribute'] ?? $this->guessTargetAttribute(new $model);
 
         $favorite = Yii::createObject([
             'class' => Favorite::className(),
@@ -134,7 +139,7 @@ class FavoritesController extends Controller
             'target_attribute' => $target_attribute,
             'created_by' => Yii::$app->user->id,
             'url' => HtmlPurifier::process($url),
-            'icon' => HTMLPurifier::process($icon),
+            'icon' => $icon,
         ]);
 
         if ($favorite->save()) {
@@ -142,8 +147,11 @@ class FavoritesController extends Controller
             return $this->render('_button', [
                 'model' => $favorite->model,
                 'target' => $favorite->target_id,
-                'label_add' => isset($_POST['label_add']) ? $_POST['label_add'] : null,
-                'label_remove' => isset($_POST['label_remove']) ? $_POST['label_remove'] : null,
+                'label_add' => $post['label_add'] ?? null,
+                'label_remove' => $post['label_remove'] ?? null,
+                'icon_add' => $post['icon_add'] ?? null,
+                'icon_remove' => $post['icon_remove'] ?? null,
+                'icon' => $icon,
             ]);
         }
     }
