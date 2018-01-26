@@ -3,8 +3,6 @@
 use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\widgets\Pjax;
-
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\SitecontentSearch */
@@ -16,8 +14,6 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="favorites-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-
-    <?php Pjax::begin(); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -35,8 +31,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'icon',
                 'header' => '&nbsp;',
                 'value' => function ($data) {
-                    if ($data->icon)
+                    if ($data->icon) {
                         return $data->icon;
+                    }
                 }
             ],
             [
@@ -77,5 +74,4 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ],
     ]); ?>
-    <?php Pjax::end(); ?>
 </div>
